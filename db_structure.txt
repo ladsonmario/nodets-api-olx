@@ -1,0 +1,30 @@
+users
+- _id
+- name
+- email
+- state
+- passwordHash
+- token
+
+states
+- _id
+- name
+
+categories
+- _id
+- name
+- slug
+
+ads
+- _id
+- idUser
+- state
+- category
+- images [{url, default: boolean}]
+- dataCreate
+- title
+- price
+- priceNegotiable: boolean
+- description
+- views
+- status
