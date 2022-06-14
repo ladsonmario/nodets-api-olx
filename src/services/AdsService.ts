@@ -1,15 +1,15 @@
-import multer, { diskStorage } from 'multer';
-import { v4 } from 'uuid';
+export const titleUpperCase = (text: string) => {
+    return text
+        .split(' ')
+        .map((word: string) => {
+            return word.toUpperCase();
+        }).join(' ')
+};
 
-export const UploadFiles = multer({         
-    fileFilter:(req, file, cb) => {
-        const images: string[] = ['image/jpg', 'image/jpeg', 'image/png'];
-        cb(null, images.includes(file.mimetype));        
-    },
-    storage: diskStorage({
-        destination: './temp',
-        filename: (req, file, cb) => {
-            cb(null, `${v4()}.jpg`)
-        }
-    })
-});
+export const titleToString = (text: any) => {
+    return text
+        .split(' ')
+        .map((word: any) => {
+            return word.toString();
+        }).join(' ')
+};

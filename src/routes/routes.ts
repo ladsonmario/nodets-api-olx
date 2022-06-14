@@ -7,7 +7,7 @@ import * as AdsController from '../controllers/AdsController';
 import { privateRouteJwt } from '../middlewares/AuthPassport';
 import { AuthValidator } from '../validators/AuthValidator';
 import { UserValidator } from '../validators/UserValidator';
-import { UploadFiles } from '../services/AdsService';
+import { UploadFiles } from '../middlewares/UploadFiles';
 
 const router = Router();
 
@@ -28,6 +28,6 @@ router.get('/categories', AdsController.getCategories);
 router.post('/ads/add', privateRouteJwt, UploadFiles.array('photos'), AdsController.addAction);
 router.get('/ads/list', AdsController.getList);
 router.get('/ads/item', AdsController.getItem);
-router.post('/ads/:id', privateRouteJwt, AdsController.editAction);
+router.post('/ads/:id', privateRouteJwt, UploadFiles.array('photos'), AdsController.editAction);
 
 export default router;
