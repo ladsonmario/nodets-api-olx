@@ -1,11 +1,13 @@
-import { Schema, model, Model, connection } from 'mongoose';
+import { Schema, model, Model, connection, ObjectId } from 'mongoose';
 
 export type CategoryType = {
-    name: string,
-    slug: string    
+    _id: ObjectId;
+    name: string;
+    slug: string;
+    img: string;
 }
 
-export const schema = new Schema<CategoryType>({
+const schema = new Schema<CategoryType>({
     name: {
         type: String,
         required: true
@@ -13,6 +15,10 @@ export const schema = new Schema<CategoryType>({
     slug: {
         type: String,
         required: true
+    },
+    img: {
+        type: String,
+        required: true 
     }
 });
 

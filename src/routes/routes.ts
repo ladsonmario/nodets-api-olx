@@ -1,33 +1,38 @@
 import { Router, Request, Response } from 'express';
-
-import * as AuthController from '../controllers/AuthController';
-import * as UserController from '../controllers/UserController';
-import * as AdsController from '../controllers/AdsController';
-
+import { AuthController } from '../controllers/AuthController';
+import { UserController } from '../controllers/UserController';
+import { AdController } from '../controllers/AdController';
+import { StateController } from '../controllers/StateController';
+import { CategoryController } from '../controllers/CategoryController';
+import { Validator } from '../validators/Validator';
 import { privateRouteJwt } from '../middlewares/AuthPassport';
-import { AuthValidator } from '../validators/AuthValidator';
-import { UserValidator } from '../validators/UserValidator';
-import { UploadFiles } from '../middlewares/UploadFiles';
+import { UploadFiles } from '../middlewares/UploadFile';
 
 const router = Router();
 
 router.get('/ping', (req: Request, res: Response) => {
-    res.json({ pong: true });
+    res.json({ pong: true });;
 });
 
-router.get('/states', UserController.getStates);
+router.get('/states/list', StateController.getStates);
+router.post('/states/add', privateRouteJwt, Validator.addState, StateController.addState);
+router.delete('/states/:id', privateRouteJwt, StateController.delState);
 
-router.post('/user/signin', AuthValidator.signin, AuthController.signin);
-router.post('/user/signup', AuthValidator.signup, AuthController.signup);
+router.post('/user/signin', Validator.signin, AuthController.signin);
+router.post('/user/signup', Validator.signup, AuthController.signup);
 
-router.get('/user/me', privateRouteJwt, UserController.info);
-router.put('/user/me', privateRouteJwt, UserValidator.editAction, UserController.editAction);
+router.get('/user/me', privateRouteJwt, UserController.infoUser);
+router.put('/user/me', privateRouteJwt, Validator.editUser, UserController.editUser);
+router.delete('/user/:id', privateRouteJwt, UserController.delUser);
 
-router.get('/categories', AdsController.getCategories);
+router.get('/category/list', CategoryController.getCategories);
+router.post('/category/add', privateRouteJwt, UploadFiles.single('img'), CategoryController.addCategory);
+router.delete('/category/:id', privateRouteJwt, CategoryController.delCategory);
 
-router.post('/ads/add', privateRouteJwt, UploadFiles.array('photos'), AdsController.addAction);
-router.get('/ads/list', AdsController.getList);
-router.get('/ads/item', AdsController.getItem);
-router.post('/ads/:id', privateRouteJwt, UploadFiles.array('photos'), AdsController.editAction);
+router.post('/ad/add', privateRouteJwt, UploadFiles.array('img'), AdController.addAd);
+router.get('/ad/list', AdController.getAds);
+router.get('/ad/:id', AdController.getAd);
+router.post('/ad/:id', privateRouteJwt, UploadFiles.array('img'), AdController.editAd);
+router.delete('/ad/:id', privateRouteJwt, AdController.delAd);
 
 export default router;

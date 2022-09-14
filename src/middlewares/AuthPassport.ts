@@ -3,18 +3,18 @@ import passport from 'passport';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
-import User from "../models/User";
+import User, { UserType } from "../models/User";
 
 dotenv.config();
 
-const notAuthorizedJson = { error: 'Not authorized', status: 401 }
+const notAuthorizedJson = { message: 'Não autorizado', status: 401 }
 const options = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.SECRET_KEY as string
 }
 
-passport.use(new JwtStrategy(options, function(jwt_payload, done) {    
-    User.findById(jwt_payload.id, function(err: any, user: any) {
+passport.use(new JwtStrategy(options, (jwt_payload, done) => {    
+    User.findById(jwt_payload.id, (err: string, user: UserType) => {
         if (err) {
             return done(err, false);
         }
@@ -31,7 +31,7 @@ export const generateToken = (data: object) => {
 }
 
 export const privateRouteJwt = (req: Request, res: Response, next: NextFunction) => {
-    passport.authenticate('jwt', (err, user) => {
+    passport.authenticate('jwt', (err: string, user: UserType) => {
         req.user = user;
         return user ? next() : next(notAuthorizedJson);
     })(req, res, next);

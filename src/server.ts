@@ -1,14 +1,12 @@
-import express, { ErrorRequestHandler, Request, Response } from 'express';
-import path from 'path';
+import express, { ErrorRequestHandler } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-
-import { mongoConnect } from './instances/mongo';
-import apiRoutes from './routes/routes';
+import path from 'path';
+import router from './routes/routes';
+import { MongoConnect } from './instances/mongo';
 
 dotenv.config();
-
-mongoConnect();
+MongoConnect();
 
 const server = express();
 
@@ -17,9 +15,9 @@ server.use(express.json());
 server.use(express.static(path.join(__dirname, '../public')));
 server.use(express.urlencoded({ extended: true }));
 
-server.use('/', apiRoutes);
+server.use(router);
 
-const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+const handleError: ErrorRequestHandler = (err, req, res, next) => {
     if(err.status) {
         res.status(err.status);
     } else {
@@ -28,12 +26,13 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 
     if(err.message) {
         res.json({ error: err.message });
-    } else { 
+    } else {
         res.json({ error: 'Ocorred error' });
     }
 }
-server.use(errorHandler);
+
+server.use(handleError);
 
 server.listen(process.env.PORT, () => {
-    console.log(`Running Address: ${process.env.PORT}`);
+    console.log(`Running address: ${process.env.BASE}`);           
 });

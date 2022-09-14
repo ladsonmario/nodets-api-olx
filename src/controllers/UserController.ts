@@ -1,94 +1,121 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
-
 import { Request, Response } from 'express';
+import User, { UserType } from '../models/User';
+import State, { StateType } from '../models/State';
+import Category, { CategoryType } from '../models/Category';
+import Ad, { AdType } from '../models/Ad';
 import { validationResult, matchedData } from 'express-validator';
 
-import State, { StateType } from '../models/State';
-import User, { UserType } from '../models/User';
-import Ads from '../models/Ads';
-import Category from '../models/Category';
+export const UserController = {    
+    infoUser: async (req: Request, res: Response) => {
+        const user = req.user as UserType;        
 
-export const getStates = async (req: Request, res: Response) => {
-    let states = await State.find();
+        if(user) {
+            const state = await State.findById(user.state) as StateType;            
+            const ads = await Ad.find({ idUser: user._id }) as AdType[];
 
-    res.json({ states });
-}
+            let adList: AdType[] = [];
 
-export const info = async (req: Request, res: Response) => {    
-    
-    const userReq = req.user as UserType;
+            for(let i in ads) {
+                const cat = await Category.findById(ads[i].category) as CategoryType;                                
 
-    const user = await User.findOne({ email: userReq.email });
+                adList.push({
+                    _id: ads[i]._id,
+                    idUser: ads[i].idUser,
+                    state: ads[i].state,                    
+                    category: cat.slug,
+                    dateCreated: ads[i].dateCreated,
+                    title: ads[i].title,
+                    price: ads[i].price,
+                    priceNegotiable: ads[i].priceNegotiable,
+                    description: ads[i].description,
+                    views: ads[i].views,
+                    status: ads[i].status,
+                    images: ads[i].images
+                });
+            }           
 
-    if(user) {
-        const state = await State.findById(user.state) as StateType;
-        const ads = await Ads.find({ idUser: user._id.toString() });
-        
-        let adList = [];
-
-        for(let i in ads) {
-            const cat = await Category.findById(ads[i].category) as any;
-
-            adList.push({
-                ...ads[i],
-                category: cat.slug
+            res.json({
+                name: user.name,
+                email: user.email,
+                state: state.name,
+                ads: adList
             });
-        }
+        }        
+    },
+    editUser: async (req: Request, res: Response) => {
+        const erros = validationResult(req);
 
-        res.json({
-            name: user.name,
-            email: user.email,
-            state: state.name,
-            ads: adList
-        });        
-    }    
-}
-
-export const editAction = async (req: Request, res: Response) => {
-    const erros = validationResult(req);
-
-    if(!erros.isEmpty()) {
-        res.json({ error: erros.mapped() });
-        return;
-    }
-
-    const data = matchedData(req);
-    
-    const userReq = req.user as UserType;    
-
-    let updates: any = { };
-
-    if(data.name) {
-        updates.name = data.name;
-    }
-    if(data.email) {
-        const checkEmail = await User.findOne({ email: data.email });
-        
-        if(checkEmail) {
-            res.json({ error: 'Existent email' });
+        if(!erros.isEmpty()) {
+            res.json({ error: erros.mapped() });
             return;
         }
 
-        updates.email = data.email;
-    }
-    if(data.state) {
-        if(mongoose.Types.ObjectId.isValid(data.state)) {
-            const checkState = await State.findById(data.state);
+        const data = matchedData(req);
+        const user = req.user as UserType;
 
-            if(!checkState) {
-                res.json({ erorr: 'Inexistent state' });
+        let updates = {} as UserType;
+
+        if(data.name) {
+            updates.name = data.name;
+        }
+
+        if(data.email) {
+            const checkEmail: UserType | null = await User.findOne({ email: data.email });
+
+            if(checkEmail) {
+                res.json({ error: 'Esse e-mail já existe, por favor tente outro!' });
                 return;
             }
 
-            updates.state = data.state;
+            updates.email = data.email;
         }
-    }
 
-    if(data.password) {
-        updates.passwordHash = await bcrypt.hash(data.password, 10);
-    }
+        if(data.state) {
+            if(mongoose.Types.ObjectId.isValid(data.state)) {
+                const stateItem = await State.findById(data.state) as StateType;
+                if(!stateItem) {
+                    res.json({ state: { msg: 'Estado inexistente!' } });
+                    return;
+                } else {
+                    updates.state = data.state;
+                }
+            } else {
+                res.json({ state: { msg: 'Código do estado está inválido!' } });
+                return;
+            }
+        }
 
-    await User.findOneAndUpdate({ email: userReq.email },{ $set: updates });
-    res.json({ actualized: true });
+        if(data.password) {
+            updates.passwordHash = await bcrypt.hash(data.password, 10);
+        }
+
+        await User.findOneAndUpdate({ email: user.email }, { $set: updates });
+        res.json({ atualização: true });
+    },
+    delUser: async (req: Request, res: Response) => {
+        const { id } = req.params;
+        const user = req.user as UserType;        
+        const idUserLogged: string = user._id.toString();        
+
+        if(idUserLogged === id) {
+            if(mongoose.Types.ObjectId.isValid(id)) {
+                const checkUser = await User.findById(id) as UserType;
+                if(!checkUser) {
+                    res.json({ error: 'Usuário inexistente!' });
+                    return;
+                } else {
+                    await User.findByIdAndDelete(id);
+                    res.json({});
+                }
+            } else {
+                res.json({ error: 'Código do usuário está inválido!' });
+                return;
+            }
+        } else {
+            res.json({ error: 'Para excluir sua conta você precisa está logado nela!' });
+            return;
+        }        
+    }
 }

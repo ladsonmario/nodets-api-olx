@@ -1,14 +1,16 @@
-import { Schema, model, Model, connection } from 'mongoose';
+import { Schema, model, Model, connection, ObjectId } from 'mongoose';
 
 export type UserType = {
-    name: string,
-    email: string,
-    state: string,
-    passwordHash: string,
-    token: string
+    _id: ObjectId;
+    name: string;
+    email: string;
+    state: string;
+    passwordHash: string;
+    token: string;
+    administrator?: boolean;
 }
 
-export const schema = new Schema<UserType>({
+const schema = new Schema<UserType>({
     name: {
         type: String,
         required: true
@@ -27,6 +29,10 @@ export const schema = new Schema<UserType>({
     },
     token: {
         type: String,
+        required: true
+    },
+    administrator: {
+        type: Boolean,
         required: true
     }
 });

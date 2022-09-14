@@ -1,10 +1,11 @@
-import { Schema, model, Model, connection } from 'mongoose';
+import { Schema, model, Model, connection, ObjectId } from 'mongoose';
 
 export type StateType = {
-    name: string
+    _id: ObjectId;
+    name: string;
 }
 
-export const schema = new Schema<StateType>({
+const schema = new Schema<StateType>({
     name: {
         type: String,
         required: true
