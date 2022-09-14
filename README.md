@@ -1,4 +1,4 @@
-<h1 align="center">API OLX em Node</h1>
+<h1 align="center">API OLX em Node v2.0</h1>
 
 ## Principais Tecnologias Usadas 📓
 <ul>
@@ -8,13 +8,16 @@
     <li>MongoDB com Mongoose</li>
     <li>Passport JWT</li>
     <li>Multer</li>
+    <li>Sharp</li>
+    <li>Express-Validator</li>
+    <li>uuid(v4)</li>
 </ul>
 
 ## Projeto 💻
-Este projeto foi feito para fins de estudos e tem como objetivo simular o backend da OLX.
+Este projeto foi feito para fins de estudos e tem como objetivo simular o backend da OLX. Foi usado o conceito de MVC na estrutura a nível de código para manter uma melhor organização.
 
 ## O que a API faz ⁉
-Esta API possui diversas funcionalidades como criar usuários, login, adicionar anúncios, controle de autenticação com token JWT, upload de múltiplos arquivos do tipo IMG nos anúncios através do Multer, modificações nos próprios.
+Esta API possui diversas funcionalidades como criar usuários, excluir usuário, fazer login, operações CRUD para anúncios e usuário, operações CRD para categorias e estados, controle de autenticação com token JWT, upload de múltiplos arquivos do tipo IMG nos anúncios através do Multer. E muito mais!
 
 ## Para rodar o projeto ⏯
 ### Pré-requisitos globais:
@@ -32,24 +35,29 @@ PORT=5000
 BASE=http://localhost:5000
 
 //url do MongoDB para o banco de dados olx
-MONGO_URL=mongodb://localhost:27017/olx
+DATABASE=mongodb://localhost:27017/olx
 
 // chave secreta para usar no passport(Strategy JWT)
 SECRET_KEY=12345678
 ```
 
 ### Para rodar o projeto:
-```npm run start-dev```
+```npm start```
 
 ### Rotas bloqueadas:
 <ul>
-    <li>fazer a requisição usando o token que for gerado no Headers da requisição. Ex.:</li>
+    <li>fazer a requisição usando o token que for gerado ao criar uma conta ou fazendo login, enviar token no Headers da requisição. Ex.:</li>
     <li>KEY: Authorization VALUE: Bearer eyJhbGciOiJIUzI1Ni......</li>
+</ul>
+
+### Upload de image em categorias:
+<ul>
+    <li>ao criar uma categoria é necessário inserir uma única imagem para ser ícone desta categoria, selecionar a opçao <strong>form-data</strong> e usar o fieldname <strong>img</strong></li>    
 </ul>
 
 ### Upload de images em anúncios:
 <ul>
-    <li>ao fazer upload de imagens selecionar a opção <strong>form-data</strong> e usar o fieldname <strong>photos</strong><br/></li>
+    <li>ao fazer upload de imagens selecionar a opção <strong>form-data</strong> e usar o fieldname <strong>img</strong><br/></li>
     <li>pode selecionar múltiplas imagens no mesmo campo sem a necessidade de criar um campo para cada arquivo</li>
 </ul>
 
