@@ -5,6 +5,7 @@ import { AdController } from '../controllers/AdController';
 import { StateController } from '../controllers/StateController';
 import { CategoryController } from '../controllers/CategoryController';
 import { Validator } from '../validators/Validator';
+import { Middlewares } from '../middlewares/Middleware';
 import { privateRouteJwt } from '../middlewares/AuthPassport';
 import { UploadFiles } from '../middlewares/UploadFile';
 
@@ -15,7 +16,7 @@ router.get('/ping', (req: Request, res: Response) => {
 });
 
 router.get('/states/list', StateController.getStates);
-router.post('/states/add', privateRouteJwt, Validator.addState, StateController.addState);
+router.post('/states/add', Middlewares.verifyIfExistState, Validator.addState, StateController.addState);
 router.delete('/states/:id', privateRouteJwt, StateController.delState);
 
 router.post('/user/signin', Validator.signin, AuthController.signin);
@@ -23,6 +24,7 @@ router.post('/user/signup', Validator.signup, AuthController.signup);
 
 router.get('/user/me', privateRouteJwt, UserController.infoUser);
 router.put('/user/me', privateRouteJwt, Validator.editUser, UserController.editUser);
+router.put('/user/admin', privateRouteJwt, UserController.addAdminUser);
 router.delete('/user/:id', privateRouteJwt, UserController.delUser);
 
 router.get('/category/list', CategoryController.getCategories);

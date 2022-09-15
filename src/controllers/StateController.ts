@@ -9,7 +9,7 @@ export const StateController = {
         const states: StateType[] = await State.find();
         res.json({ states });
     },
-    addState: async (req: Request, res: Response) => {
+    addState: async (req: Request, res: Response) => {        
         const erros = validationResult(req);
         
         if(!erros.isEmpty()) {
@@ -18,23 +18,31 @@ export const StateController = {
         }
 
         const data = matchedData(req);
-        const name: string = data.name.toUpperCase();
+        const user = req.user as UserType;
+        const states = await State.find() as StateType[];
 
-        const stateItem: StateType | null = await State.findOne({ name });
+        if(states.length === 0 || user.administrator) {
+            const name: string = data.name.toUpperCase();
 
-        if(stateItem) {
-            res.json({ error: 'Estado já está cadastrado no sistema!' });
+            const stateItem: StateType | null = await State.findOne({ name });
+
+            if(stateItem) {
+                res.json({ error: 'Estado já está cadastrado no sistema!' });
+                return;
+            }
+
+            if(name.length !== 2) {
+                res.json({ error: 'Inserir somente sigla do estado!' });
+                return;
+            }
+
+            const state = await State.create({ name }) as StateType;
+            
+            res.json({ _id: state._id, name: state.name });
+        } else {
+            res.json({ error: 'Você não possui permissões para essa ação, entre em contado com um admistrador!' });
             return;
         }
-
-        if(name.length !== 2) {
-            res.json({ error: 'Inserir somente sigla do estado!' });
-            return;
-        }
-
-        await State.create({ name });
-        
-        res.json({ name });
     },
     delState: async (req: Request, res: Response) => {
         const { id } = req.params;

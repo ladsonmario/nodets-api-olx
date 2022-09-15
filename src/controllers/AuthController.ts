@@ -65,6 +65,7 @@ export const AuthController = {
 
         const passwordHash: string = await bcrypt.hash(data.password, 10);
         let token: string = generateToken({ email: data.email });
+        const userAdmin = await User.find({ administrator: true }) as UserType[];
 
         const newUser: UserType = await User.create({
             name: data.name,
@@ -72,7 +73,7 @@ export const AuthController = {
             passwordHash,
             token,
             state: data.state,
-            administrator: false
+            administrator: (userAdmin.length === 0) ? true : false
         });
 
         token = generateToken({ id: newUser._id, email: data.email });

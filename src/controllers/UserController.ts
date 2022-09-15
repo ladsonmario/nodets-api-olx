@@ -117,5 +117,28 @@ export const UserController = {
             res.json({ error: 'Para excluir sua conta você precisa está logado nela!' });
             return;
         }        
+    },
+    addAdminUser: async (req: Request, res: Response) => {
+        const { id } = req.body;
+        const user = req.user as UserType;
+
+        if(user.administrator) {
+            if(mongoose.Types.ObjectId.isValid(id)) {
+                const checkUser = await User.findById(id) as UserType;
+                if(!checkUser) {
+                    res.json({ error: 'Usuário inexistente!' });
+                    return;
+                } else {
+                    await User.findByIdAndUpdate(id, { administrator: true });
+                    res.json({ status: 'Permissão de administrador adicionada!' });                    
+                }
+            } else {
+                res.json({ error: 'Código do usuário está inválido!' });
+                return;
+            }
+        } else {
+            res.json({ error: 'Você não possui permissões para essa ação, entre em contado com um admistrador!' });
+            return;
+        }
     }
 }
