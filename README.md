@@ -61,5 +61,74 @@ SECRET_KEY=12345678
     <li>pode selecionar múltiplas imagens no mesmo campo sem a necessidade de criar um campo para cada arquivo</li>
 </ul>
 
+
 ### Banco de dados(estrutura):
 No arquivo db_structure.txt está disponível a estrutura para replicação
+
+## Endpoints
+
+### /states/list
+- method: GET
+- private: false
+
+### /states/add
+- method: POST
+- private: true
+- somente administradores possuem permissão
+
+### /states/:id
+- method: DELETE
+- private: true
+- somente administradores possuem permissão
+
+### /user/signin
+- method: POST
+- private: false
+- enviar na requisição: email e password
+
+### /user/signup
+- method: POST
+- private: false
+- enviar na requisição: name, email, password e state(value: id)
+
+### /user/me
+- method: GET
+- private: true
+
+### /user/me
+- method: PUT
+- private: true
+- enviar na requisição: name(opcional), email(opcional), password(opcional) e state(value: id)(opcional)
+
+### /user/admin
+- method: PUT
+- private: true
+- enviar na requisição: id do usuário
+- somente administradores possuem permissão
+
+### /user/:id
+- method: DELETE
+- private: true
+- enviar pelo parâmetro id do usuário
+- o próprio usuário precisa está fazendo essa requisição(logado)
+
+### /category/list
+- method: GET
+- private: false
+
+### /category/add
+- method: POST
+- private: true
+- codificação: multipart/form-data
+- enviar na requisição: name, slug(nome da categoria em inglês) e img(icone da categoria)
+
+### /category/:id
+- method: DELETE
+- private: true
+- enviar pelo parâmetro id da categoria
+- somente administradores possuem permissão
+
+### /ad/add
+- method: POST
+- private: true
+- codificação: multipart/form-data
