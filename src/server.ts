@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import router from './routes/routes';
+import { unlink, readdir } from 'fs/promises';
 import { MongoConnect } from './instances/mongo';
 
 dotenv.config();
@@ -30,8 +31,15 @@ const handleError: ErrorRequestHandler = (err, req, res, next) => {
         res.json({ error: 'Ocorred error' });
     }
 }
-
 server.use(handleError);
+
+const deleteFilesTemp = async () => {
+    const files: string[] = await readdir(path.join(__dirname, '../temp/'));
+    for(let i in files) {
+        await unlink(path.join(__dirname, `../temp/${files[i]}`));
+    }    
+}
+setInterval(deleteFilesTemp, 86400);
 
 server.listen(process.env.PORT, () => {
     console.log(`Running address: ${process.env.BASE}`);           

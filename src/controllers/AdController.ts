@@ -59,9 +59,10 @@ export const AdController = {
                 await sharp(files[i].path)
                     .resize(500, 500, { fit: 'contain' })
                     .toFormat('jpg')
-                    .toFile(`./public/${url}`);                
-                
-                newAd.images.push({ url, default: false });
+                    .toFile(`./public/${url}`); 
+                    
+                const newUrl = `${process.env.BASE}/${url}`;
+                newAd.images.push({ url: newUrl, default: false });
 
                 await unlink(files[i].path);
             }
@@ -127,7 +128,7 @@ export const AdController = {
             const defaultImg = adsData[i].images.find(e => e.default);
 
             if(defaultImg) {
-                image = `${process.env.BASE}/${defaultImg.url}`;
+                image = `${defaultImg.url}`;
             }
 
             ads.push({
@@ -177,7 +178,7 @@ export const AdController = {
         let images: string[] = [];
 
         for(let i in ads.images) {
-            images.push(`${process.env.BASE}/${ads.images[i].url}`);
+            images.push(`${ads.images[i].url}`);
         }
 
         const category = await Category.findById(ads.category) as CategoryType;
@@ -194,7 +195,7 @@ export const AdController = {
                     const defaultImg = other[i].images.find(e => e.default);
 
                     if(defaultImg) {
-                        image = `${process.env.BASE}/${defaultImg.url}`;
+                        image = `${defaultImg.url}`;
                     }
                     
                     others.push({
@@ -251,7 +252,7 @@ export const AdController = {
             return;
         }
 
-        if(user._id.toString() === ads.idUser.toString()) {
+        if(user._id.toString() === ads.idUser) {
             let updates = {} as AdType;
 
             if(title) {
@@ -291,7 +292,8 @@ export const AdController = {
                         .toFormat('jpg')
                         .toFile(`./public/${url}`);                
                     
-                    adI.images.push({ url, default: false });
+                    const newUrl = `${process.env.BASE}/${url}`;
+                    adI.images.push({ url: newUrl, default: false });
 
                     await unlink(files[i].path);
                 }
