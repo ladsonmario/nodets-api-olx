@@ -65,70 +65,105 @@ SECRET_KEY=12345678
 ### Banco de dados(estrutura):
 No arquivo db_structure.txt está disponível a estrutura para replicação
 
-## Endpoints
+## Endpoints e suas funcionalidades
 
-### /states/list
+### <strong>/states/list</strong> () => lista todos os estados
 - method: GET
 - private: false
 
-### /states/add
+### <strong>/states/add</strong> () => adiciona estado
 - method: POST
 - private: true
 - somente administradores possuem permissão
 
-### /states/:id
+### <strong>/states/:id</strong> () => deleta estado
 - method: DELETE
 - private: true
 - somente administradores possuem permissão
 
-### /user/signin
+### <strong>/user/signin</strong> () => faz login
 - method: POST
 - private: false
 - enviar na requisição: email e password
 
-### /user/signup
+### <strong>/user/signup</strong> () => cria usuário
 - method: POST
 - private: false
 - enviar na requisição: name, email, password e state(value: id)
 
-### /user/me
+### <strong>/user/me</strong> () => pega informações do usuário
 - method: GET
 - private: true
 
-### /user/me
+### <strong>/user/me</strong> () => edita dados do usuário
 - method: PUT
 - private: true
 - enviar na requisição: name(opcional), email(opcional), password(opcional) e state(value: id)(opcional)
 
-### /user/admin
+### <strong>/user/admin</strong> () => torna usuário um administrador
 - method: PUT
 - private: true
 - enviar na requisição: id do usuário
 - somente administradores possuem permissão
 
-### /user/:id
+### <strong>/user/:id</strong> () => deleta usuário
 - method: DELETE
 - private: true
 - enviar pelo parâmetro id do usuário
 - o próprio usuário precisa está fazendo essa requisição(logado)
 
-### /category/list
+### <strong>/category/list</strong> () => lista todas as categorias
 - method: GET
 - private: false
 
-### /category/add
+### <strong>/category/add</strong> () => adiciona nova categoria
 - method: POST
 - private: true
 - codificação: multipart/form-data
 - enviar na requisição: name, slug(nome da categoria em inglês) e img(icone da categoria)
 
-### /category/:id
+### <strong>/category/:id</strong> () => deleta categoria
 - method: DELETE
 - private: true
 - enviar pelo parâmetro id da categoria
 - somente administradores possuem permissão
 
-### /ad/add
+### <strong>/ad/add</strong> () => cria um nono anúncio
 - method: POST
 - private: true
 - codificação: multipart/form-data
+- enviar na requisição: title, cat(categoria value: id), priceneg(opcional), price(opcional), desc(descrição) e img(multiple)
+
+### <strong>/ad/list</strong> () => lista anúncios (com filtros)
+- method: GET
+- private: false
+- aceita filtros que são enviados através de query
+- sort = 'ASC' | 'DESC' (para configuração de exibição)
+- limit = quantos anúncios serão exibidos (para configuração de exibição)
+- offset = quantos anúncios serão pulados na paginação (para configuração de exibição)
+- q = pesquisar anúncio por nome (filtra pela query)
+- cat = pesquisa por categoria (filtra pela query)
+- state = pesquisa por estado (filtra pela query)
+
+- <strong>obs.: se enviar a requesição sem as query ele irá retornar todos os anúncios</strong>
+
+// exemplo de endpoint de pesquisa com filtro<br/>
+```/ad/list?q=uno&cat=cars&state=pa```
+
+### <strong>/ad/:id</strong> () => pega informações de SOMENTE 1 anúncio
+- method: GET
+- private: false
+- enviar pelo parâmetro id do anúncio
+
+### <strong>/ad/:id</strong> () => atualiza dados de um anúncio
+- method: PUT
+- private: true
+- codificação: multipart/form-data (se for enviar img)
+- somente o proprietário do anúncio pode fazer sua edição
+- enviar na requisição: title(opcional), cat(opcional)(categoria value: id), priceneg(opcional), price(opcional), desc(opcional)(descrição) e img(opcional)(multiple)
+
+### <strong>/ad/:id</strong> () => deleta anúncio
+- method: DELETE
+- private: true
+- enviar pelo parâmetro id do anúncio
+- Somente o proprietário pode remover o anúncio

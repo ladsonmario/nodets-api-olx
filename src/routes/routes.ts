@@ -34,7 +34,7 @@ router.delete('/category/:id', privateRouteJwt, CategoryController.delCategory);
 router.post('/ad/add', privateRouteJwt, UploadFiles.array('img'), AdController.addAd);
 router.get('/ad/list', AdController.getAds);
 router.get('/ad/:id', AdController.getAd);
-router.post('/ad/:id', privateRouteJwt, UploadFiles.array('img'), AdController.editAd);
+router.put('/ad/:id', privateRouteJwt, UploadFiles.array('img'), AdController.editAd);
 router.delete('/ad/:id', privateRouteJwt, AdController.delAd);
 
 export default router;
