@@ -213,6 +213,7 @@ export const AdController = {
             _id: ads._id,
             title: ads.title,
             price: ads.price,
+            dateCreated: ads.dateCreated,
             priceNegotiable: ads.priceNegotiable,
             description: ads.description,
             views: ads.views,
