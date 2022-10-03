@@ -55,11 +55,11 @@ export const AuthController = {
         if(mongoose.Types.ObjectId.isValid(data.state)) {
             const stateItem = await State.findById(data.state) as StateType;            
             if(!stateItem) {
-                res.json({ state: { msg: 'Estado inexistente!' } });
+                res.json({ error: 'Estado inexistente!' } );
                 return;
             }
         } else {
-            res.json({ state: { msg: 'Código do estado está inválido!' } });
+            res.json({ error: 'Código do estado está inválido!' } );
             return;
         }
 

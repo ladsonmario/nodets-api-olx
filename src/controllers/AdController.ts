@@ -8,6 +8,7 @@ import State, { StateType } from '../models/State';
 import Ad, { AdType } from '../models/Ad';
 import { Request, Response } from 'express';
 import dotenv from 'dotenv';
+import { ResultWithContext } from 'express-validator/src/chain';
 
 dotenv.config();
 
@@ -30,6 +31,11 @@ export const AdController = {
             }
         } else {
             res.json({ error: 'Código da categoria está inválido!' });
+            return;
+        }
+
+        if(!desc) {
+            res.json({ error: 'Adicione uma descrição para seu produto, isso ajuda para ele ser vendido mais rápido!' });
             return;
         }
 
