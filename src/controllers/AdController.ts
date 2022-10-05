@@ -102,7 +102,7 @@ export const AdController = {
         }
 
         if(offset < 0) {
-            res.json({ error: 'offset não pode ser um número negativo!' });
+            res.json({ error: 'ATENÇÃO, offset não pode ser um número negativo!' });
             return;
         }
 
