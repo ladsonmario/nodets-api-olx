@@ -101,6 +101,11 @@ export const AdController = {
             image: string;
         }
 
+        if(offset < 0) {
+            res.json({ error: 'offset não pode ser um número negativo!' });
+            return;
+        }
+
         const filters = {} as FilterType;
         
         if(q) {
@@ -196,7 +201,7 @@ export const AdController = {
         
         if(other.length > 1) {
             for(let i in other) {
-                if(other[i]._id !== ads._id) {
+                if(other[i]._id.toString() !== ads._id.toString()) {
                     let image: string = '';
                     const defaultImg = other[i].images.find(e => e.default);
 
