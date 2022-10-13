@@ -264,7 +264,8 @@ export const AdController = {
             return;
         }
 
-        if(user._id.toString() === ads.idUser) {
+        console.log(user._id.toString, ads.idUser.toString());
+        if(user._id.toString() === ads.idUser.toString()) {
             let updates = {} as AdType;
 
             if(title) {

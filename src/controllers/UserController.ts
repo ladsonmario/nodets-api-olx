@@ -13,7 +13,7 @@ export const UserController = {
 
         if(user) {
             const state = await State.findById(user.state) as StateType;            
-            const ads = await Ad.find({ idUser: user._id }) as AdType[];
+            const ads = await Ad.find({ idUser: user._id.toString() }) as AdType[];
 
             let adList: AdType[] = [];
 
@@ -37,6 +37,7 @@ export const UserController = {
             }           
 
             res.json({
+                _id: user._id,
                 name: user.name,
                 email: user.email,
                 state: state.name,
