@@ -289,6 +289,7 @@ export const AdController = {
                 const category = await Category.findOne({ slug: cat }) as CategoryType;
                 if(!category) {
                     res.json({ error: 'Categoria inexistente' });
+                    return;
                 }
                 updates.category = category._id.toString();
             }
