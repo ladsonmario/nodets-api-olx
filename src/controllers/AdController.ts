@@ -39,6 +39,11 @@ export const AdController = {
             return;
         }
 
+        if(price === 'NaN' || price === NaN || price === '"NaN"') {
+            res.json({ error: 'Preço não pode possuir o valor NaN!' });
+            return;
+        }
+
         if(price) {
             price = price.replace('.', '').replace(',', '').replace(' ', '').replace('R$', '');
             price = parseFloat(price);
@@ -273,6 +278,10 @@ export const AdController = {
             }
             if(status) {
                 updates.state = status;
+            }
+            if(price === 'NaN' || price === NaN || price === '"NaN"') {
+                res.json({ error: 'Preço não pode possuir o valor NaN!' });
+                return;
             }
             if(price) {
                 price = price.replace('.', '').replace(',', '').replace(' ', '').replace('R$', '');
