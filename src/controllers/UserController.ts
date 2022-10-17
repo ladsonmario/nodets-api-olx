@@ -40,6 +40,7 @@ export const UserController = {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
+                administrator: user.administrator,
                 state,
                 ads: adList
             });
